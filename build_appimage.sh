@@ -61,6 +61,8 @@ TMPDIR=$(mktemp -d)
 
 _cleanup() {
     rm -rf "$TMPDIR"
+    rm -R "$APPDIR"
+    rm -R "_temp_home"
 }
 
 trap _cleanup EXIT
@@ -154,5 +156,4 @@ wget "https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRu
 chmod +x "$APPDIR"/AppRun
 
 appimagetool $APPDIR
-
-
+appimagetool $APPDIR
