@@ -31,7 +31,7 @@ When starting the appimage, a wrapper script **usr/bin/rubyapp** is run. Its job
 
 - [ ] Make **usr/bin/rubyapp** smart enough to identify ruby program entry points
 - [ ] Add a way to supply a custom start command
-- [ ] Run `bundle install` to install dependencies of the target program on image creation
+- [x] Run `bundle install` to install dependencies of the target program on image creation
 - [ ] Add a way to provide needed system dependencies (e.g. sqlite3-dev)
 - [ ] Extract the useful parts of this as linuxdeploy plugin/transform this into one or multiple linuxdeploy plugins
 - [ ] Make use of https://github.com/AppImageCrafters/appimage-builder to handle system dependencies (and replace portable ruby?)

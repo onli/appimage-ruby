@@ -61,7 +61,7 @@ TMPDIR=$(mktemp -d)
 
 _cleanup() {
     rm -rf "$TMPDIR"
-    rm -R "$APPDIR"
+    #rm -R "$APPDIR"
     rm -R "_temp_home"
 }
 
@@ -114,7 +114,7 @@ ln -s portableruby/bin.real usr/bin.real
 popd
 
 # patch ruby_environment with ROOT="$ROOT/portableruby" so it can find the gems
-sed -i '3 a ROOT="$ROOT/portableruby"' $APPDIR/usr/portableruby/bin/ruby_environment
+#sed -i '3 a ROOT="$ROOT/portableruby"' $APPDIR/usr/portableruby/bin/ruby_environment
 
 # place target files under opt
 
@@ -127,10 +127,15 @@ done
 # TODO: Start something generic like config.ru, not hello_world.rb
 cat > "$APPDIR"/usr/bin/rubyapp  <<\EOF
 #!/bin/sh
-ruby_environment
 ROOT=`dirname "$0"`
 ROOT=`cd "$ROOT/.." &>/dev/null && pwd`
-ruby "$ROOT/../opt/hello_world.rb"
+$ROOT/portableruby/bin/ruby_environment
+if [ -e "$ROOT/../opt/Gemfile" ]; then
+    cd $ROOT/../opt
+    $ROOT/portableruby/bin/ruby $ROOT/portableruby/bin/bundle exec $ROOT/portableruby/bin/ruby "$ROOT/../opt/hello_world.rb"
+else
+    $ROOT/portableruby/bin/ruby "$ROOT/../opt/hello_world.rb"
+fi
 EOF
 chmod +x "$APPDIR"/usr/bin/rubyapp
 
@@ -155,5 +160,8 @@ wget "https://www.ruby-lang.org/images/header-ruby-logo.png" -O "$APPDIR"/ruby.p
 wget "https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-x86_64" -O "$APPDIR"/AppRun
 chmod +x "$APPDIR"/AppRun
 
-appimagetool $APPDIR
+if [ -e "$APPDIR"/opt/Gemfile ]; then
+    "$APPDIR"/usr/portableruby/bin/bundle install --gemfile "$APPDIR"/opt/Gemfile
+fi
+
 appimagetool $APPDIR
